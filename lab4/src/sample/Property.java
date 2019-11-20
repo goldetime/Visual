@@ -1,5 +1,7 @@
 package sample;
 
+import java.util.concurrent.locks.Condition;
+
 public class Property {
 
 	private String propertyNumber;
@@ -14,8 +16,10 @@ public class Property {
 	private int bathrooms;
 	private String condition;
 	private String saleStatus;
-	private Double marketValue;
+	private double marketValue;
 	private String pictureFile;
+
+	public Property() {}
 
 	public Property(String propertyNumber, String city, int stories,
 									int yearBuilt, int bedrooms, int bathrooms) {
@@ -25,6 +29,20 @@ public class Property {
 		this.yearBuilt = yearBuilt;
 		this.bedrooms = bedrooms;
 		this.bathrooms = bathrooms;
+	}
+
+	public Property(String propertyNumber, String city, int stories,
+									int yearBuilt, int bedrooms, int bathrooms,
+									String condition, String saleStatus, Double marketValue) {
+		this.propertyNumber = propertyNumber;
+		this.city = city;
+		this.stories = stories;
+		this.yearBuilt = yearBuilt;
+		this.bedrooms = bedrooms;
+		this.bathrooms = bathrooms;
+		this.condition = condition;
+		this.saleStatus = saleStatus;
+		this.marketValue = marketValue;
 	}
 
 	public String getPropertyNumber() {

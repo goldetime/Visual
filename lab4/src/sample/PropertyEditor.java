@@ -1,140 +1,191 @@
 package sample;
 
+import com.sun.prism.Image;
 import javafx.application.Application;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.ImageInput;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 
 public class PropertyEditor extends Application {
-  Stage stage;
-  BorderPane root;
-  ObservableList<String> days;
-
+	
+	Stage stg;
+	ObservableList<String> val;
+	BorderPane root;
+	
   @Override
-  public void start(Stage primaryStage) throws Exception{
-    root = new BorderPane();
-    root.setPadding(new Insets(10));
+  public void start(Stage stage) throws Exception {
+		root = new BorderPane();
+		root.setPadding(new Insets(10));
 
-    TableView<Property> top = topSec();
-    root.setTop(top);
+		StackPane t = top();
+		root.setTop(t);
 
-    StackPane s = new StackPane();
-    root.setCenter(s);
+		StackPane m = mid();
+		root.setCenter(m);
 
-    StackPane bot = botStackPane();
-    root.setBottom(bot);
-
-    stage = primaryStage;
-    primaryStage.setTitle("Properties Listing");
-    primaryStage.setScene(new Scene(root, 800, 900));
-    primaryStage.show();
+		StackPane b = bot();
+		root.setBottom(b);
+		
+		stg = stage;
+		Scene s = new Scene(root, 800, 900);
+		stage.setTitle("Property Editor");
+		stage.setScene(s);
+		stage.show();
   }
 
-  TableView<Property> topSec() {
-    /* Create table */
-    TableView<Property> table = new TableView<Property>();
 
-    // Editable
-    table.setEditable(true);
 
-    /* Create columns */
-    TableColumn<Property, String> propertyNumberCol = new TableColumn<Property, String>("Property#");
-    propertyNumberCol.setCellFactory(TextFieldTableCell.<Property> forTableColumn());
-    propertyNumberCol.setCellValueFactory(new PropertyValueFactory("propertyNumber"));
-    // On Cell edit commit (for FullName column)
-    propertyNumberCol.setOnEditCommit((TableColumn.CellEditEvent<Property, String> event) -> {
-      TablePosition<Property, String> pos = event.getTablePosition();
-      String s = event.getNewValue();
-      int row = pos.getRow();
-      Property p = event.getTableView().getItems().get(row);
-      p.setPropertyNumber(s);
-    });
+	public StackPane top() {
+		StackPane t = new StackPane();
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20));
 
-    TableColumn<Property, String> cityCol = new TableColumn<Property, String>("City");
-    TableColumn<Property, Integer> storiesCol = new TableColumn<Property, Integer>("Stories");
-    TableColumn<Property, Integer> yearCol = new TableColumn<Property, Integer>("Year");
-    TableColumn<Property, Integer> bedsCol = new TableColumn<Property, Integer>("Beds");
-    TableColumn<Property, Integer> bathsCol = new TableColumn<Property, Integer>("Baths");
-    TableColumn<Property, String> conditionCol = new TableColumn<Property, String>("Condition");
-    TableColumn<Property, String> saleStatusCol = new TableColumn<Property, String>("Sale status");
-    TableColumn<Property, Double> marketValueCol = new TableColumn<Property, Double>("Market Value");
+		// 1 0 2 0 30 40 50 60
+		grid.add(new Label("Property Type:"), 0, 0);
+		ObservableList<String> typeList =
+			FXCollections.observableArrayList("Condominium", "Townhouse", "Single Family", "Unknown");
+		ComboBox<String> c1 = new ComboBox<>(typeList);
+		c1.setMaxWidth(Double.MAX_VALUE);
+		grid.add(c1, 1, 0);
+		
+		grid.add(new Label("Property#:"), 2, 0);
+		TextField t1 = new TextField();
+		grid.add(t1, 3, 0);
+		
+		grid.add(new Label("Address:"), 0, 1);
+		TextField t2 = new TextField();
+		grid.add(t2, 1, 1);
+		
+		grid.add(new Label("City:"), 0, 2);
+		TextField t3 = new TextField();
+		grid.add(t3, 1, 2);
+		
+		grid.add(new Label("ZIP Code:"), 0, 3);
+		TextField t4 = new TextField();
+		grid.add(t4, 1, 3);
+		
+		grid.add(new Label("Year Built:"), 0, 4);
+		TextField t5 = new TextField();
+		grid.add(t5, 1, 4);
+		
+		grid.add(new Label("Bedrooms:"), 0, 5);
+		TextField t6 = new TextField();
+		t6.setPromptText("0");
+		t6.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(t6, 1, 5);
 
-    // (Combine two column)
-    // aCol.getColums().addAll(bCol, cCol);
+		grid.add(new Label("Market Value:"), 0, 6);
+		TextField t8 = new TextField();
+		t8.setPromptText("0.00");
+		t8.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(t8, 1, 6);
 
-    propertyNumberCol.setMinWidth(200);
+		grid.add(new Label("State:"), 2, 2);
+		// 
+		ObservableList<String> stateList =
+			FXCollections.observableArrayList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID",
+																				"IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT",
+																				"NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+																				"SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		ComboBox<String> c2 = new ComboBox<>(stateList);
+		c2.setMaxWidth(Double.MAX_VALUE);
+		grid.add(c2, 3, 2);
+		
+		grid.add(new Label("Stories:"), 2, 3);
+		TextField t7 = new TextField();
+		t7.setPromptText("1");
+		t7.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(t7, 3, 3);
 
-    /* Defines how to fill data for each cell. */
-    // Get value from property of Property.
-    cityCol.setCellValueFactory(new PropertyValueFactory("city"));
-    storiesCol.setCellValueFactory(new PropertyValueFactory("stories"));
-    yearCol.setCellValueFactory(new PropertyValueFactory("yearBuilt"));
-    bedsCol.setCellValueFactory(new PropertyValueFactory("bedrooms"));
-    bathsCol.setCellValueFactory(new PropertyValueFactory("bathrooms"));
-    conditionCol.setCellValueFactory(new PropertyValueFactory("condition"));
-    saleStatusCol.setCellValueFactory(new PropertyValueFactory("saleStatus"));
-    marketValueCol.setCellValueFactory(new PropertyValueFactory("marketValue"));
+		grid.add(new Label("Condition:"), 2, 4);
+		ObservableList<String> conditionList = FXCollections.observableArrayList("Excellent", "Good Shape", "Needs Fixing");
+		ComboBox<String> c3 = new ComboBox<>(conditionList);
+		c3.setMaxWidth(Double.MAX_VALUE);
+		grid.add(c3, 3, 4);
 
-    /* Sort column */
-    cityCol.setSortType(TableColumn.SortType.ASCENDING);
-    // col.setSortable(false);
+		grid.add(new Label("Bathrooms:"), 2, 5);
+		TextField t9 = new TextField();
+		t9.setPromptText("0.00");
+		t9.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(t9, 3, 5);
 
-    /* Display row data */
-    ObservableList<Property> list = getList();
-    table.setItems(list);
+		grid.add(new Label("Sale Status:"), 2, 6);
+		ObservableList<String> saleStatusList = FXCollections.observableArrayList("Unspecified", "Available", "Sold");
+		ComboBox<String> c4 = new ComboBox<>(saleStatusList);
+		c4.setMaxWidth(Double.MAX_VALUE);
+		grid.add(c4, 3, 6);
 
-    /* Add columns */
-    table.getColumns().addAll(propertyNumberCol, cityCol, storiesCol,
-        yearCol, bedsCol, bathsCol,
-        conditionCol, saleStatusCol, marketValueCol);
+		GridPane.setColumnSpan(t2, 3);
 
-    return table;
-  }
+		t.getChildren().addAll(grid);
+		
+		return t;
+	}
 
-  private ObservableList<Property> getList() {
+	public StackPane mid() {
+		StackPane s = new StackPane();
+		GridPane grid = new GridPane();
+		grid.setHgap(5);
+		grid.setVgap(5);
 
-    Property p1 = new Property("1", "UB", 3, 1999, 2, 2);
-    Property p2 = new Property("2", "Erdenet", 3, 1998, 2, 2);
-    Property p3 = new Property("3", "Darkhan", 3, 1996, 2, 2);
+		Button pic = new Button("Picture Insert");
+		pic.setPrefWidth(85);
+		pic.setAlignment(Pos.TOP_LEFT);
 
-    ObservableList<Property> list = FXCollections.observableArrayList(p1, p2, p3);
-    return list;
-  }
+		Rectangle r = new Rectangle();
+		r.setFill(Color.TRANSPARENT);
+		r.setStroke(Color.BLACK);
+		r.setWidth(680);
+		r.setHeight(500);
 
-  StackPane botStackPane() {
-    StackPane p = new StackPane();
+		grid.add(pic, 0, 0);
+		grid.add(r, 1, 0);
 
-    HBox hbox = new HBox();
-    hbox.setSpacing(400);
-    // t, l, b, r
-    // hbox.setPadding(new Insets(0, 20, 0, 20));
+		s.getChildren().add(grid);
+		return s;
+	}
 
-    Button c = new Button("New Real Estate Property...");
-    c.setOnAction(e -> {
-
-    });
-
-    Button close = new Button("Close");
-    close.setPrefWidth(180);
-    close.setOnAction(e -> {
-      stage.close();
-    });
-
-    hbox.getChildren().addAll(c, close);
-    p.getChildren().addAll(hbox);
-    return p;
-  }
-
-  public static void main(String[] args) {
-    launch(args);
-  }
+	public StackPane bot() {
+		StackPane s = new StackPane();
+		HBox hbox = new HBox();
+		hbox.setAlignment(Pos.BOTTOM_RIGHT);
+		hbox.setSpacing(20);
+		Button ok = new Button("OK");
+		ok.setPrefWidth(70);
+		ok.setOnAction(e -> {
+				
+			});
+		
+		Button cancel = new Button("Cancel");
+		cancel.setPrefWidth(70);
+		cancel.setCancelButton(true);
+		cancel.setOnAction(e -> {
+			// stg.close();
+				//finish();
+			});
+		
+		hbox.getChildren().addAll(ok, cancel);
+		s.getChildren().add(hbox);
+		return s;
+	}
+  
+	// public static void main(String[] args) {launch(args);}
 }
