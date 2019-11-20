@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 // --module-path /home/golde/Downloads/javafx-sdk-13/lib --add-modules javafx.controls,javafx.fxml
+// --module-path "C:\Users\ochko\Downloads\openjfx-13_windows-x64_bin-sdk\javafx-sdk-13\lib" --add-modules javafx.controls,javafx.fxml
 public class Main extends Application {
 
   @Override
