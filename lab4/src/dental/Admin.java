@@ -2,7 +2,7 @@ package dental;
 
 public class Admin {
   private String fname;
-  private double password;
+  private String password;
 
   public String getFname() {
     return fname;
@@ -12,11 +12,11 @@ public class Admin {
     this.fname = fname;
   }
 
-  public double getPassword() {
+  public String getPassword() {
     return password;
   }
 
-  public void setPassword(double password) {
+  public void setPassword(String password) {
     this.password = password;
   }
 }
